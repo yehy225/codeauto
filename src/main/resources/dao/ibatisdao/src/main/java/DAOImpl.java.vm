@@ -1,0 +1,98 @@
+##DAO实现代码生成模版
+##使用到的变量有：
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+##$!{gb.userName}机器登录用户名，如：yingyang
+##$!{gb.nowDate}当前日期，如：2011-10-14
+##$!{tbb.className}类名，如：AgentAppForm
+##$!{tbb.objectName}对象名，如：agentAppForm
+##$!{tbb.tableComment}表注释，如：招商申请
+package $!{gb.packageName}.dao.ibatis.impl;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import $!{gb.packageName}.dao.domain.$!{tbb.className}DO;
+import $!{gb.packageName}.dao.ibatis.BaseDAO;
+import $!{gb.packageName}.dao.ibatis.$!{tbb.className}DAO;
+import $!{gb.packageName}.dao.query.$!{tbb.className}Query;
+import $!{gb.packageName}.dao.validate.$!{tbb.className}Validate;
+
+/**
+ * $!{tbb.tableComment}操作实现类
+ * @author $!{gb.userName}
+ * @since $!{gb.nowDate}
+ */
+public class $!{tbb.className}DAOImpl implements $!{tbb.className}DAO {
+	@Resource
+	private BaseDAO baseDAO;
+	
+	public $!{tbb.className}DO get$!{tbb.className}DO($!{tbb.className}Query $!{tbb.objectName}Query){
+		$!{tbb.className}Validate.get$!{tbb.className}DO($!{tbb.objectName}Query);
+		return ($!{tbb.className}DO)baseDAO.getSqlMapClientTemplate().queryForObject("$!{tbb.className}DAO.get$!{tbb.className}DO", $!{tbb.objectName}Query);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public List<$!{tbb.className}DO> get$!{tbb.className}DOList($!{tbb.className}Query $!{tbb.objectName}Query){
+		if($!{tbb.objectName}Query==null) $!{tbb.objectName}Query = new $!{tbb.className}Query();
+		$!{tbb.className}Validate.get$!{tbb.className}DOList($!{tbb.objectName}Query);
+#if($sysInit.dbType==1)
+		//Oracle查询条件带IdList,SQL语句优化处理
+		if(!$!{tbb.objectName}Query.getIdList().isEmpty()){
+			return (List<$!{tbb.className}DO>)baseDAO.getSqlMapClientTemplate().queryForList("$!{tbb.className}DAO.get$!{tbb.className}DOListWithIdStr", $!{tbb.objectName}Query);
+		}else{
+			return (List<$!{tbb.className}DO>)baseDAO.getSqlMapClientTemplate().queryForList("$!{tbb.className}DAO.get$!{tbb.className}DOList", $!{tbb.objectName}Query);
+		}
+#elseif($sysInit.dbType==2)
+		return (List<$!{tbb.className}DO>)baseDAO.getSqlMapClientTemplate().queryForList("$!{tbb.className}DAO.get$!{tbb.className}DOList", $!{tbb.objectName}Query);
+#end
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<$!{tbb.className}DO> get$!{tbb.className}DOListWithPage($!{tbb.className}Query $!{tbb.objectName}Query){
+		if($!{tbb.objectName}Query==null) $!{tbb.objectName}Query = new $!{tbb.className}Query();
+		$!{tbb.className}Validate.get$!{tbb.className}DOListWithPage($!{tbb.objectName}Query);
+#if($sysInit.dbType==1)
+		//Oracle查询条件带IdList,SQL语句优化处理
+		if(!$!{tbb.objectName}Query.getIdList().isEmpty()){
+			int count = (Integer)baseDAO.getSqlMapClientTemplate().queryForObject("$!{tbb.className}DAO.get$!{tbb.className}DOListCountWithIdStr",$!{tbb.objectName}Query);
+			$!{tbb.objectName}Query.setTotalItem(count);
+			return (List<$!{tbb.className}DO>)baseDAO.getSqlMapClientTemplate().queryForList("$!{tbb.className}DAO.get$!{tbb.className}DOListWithPageWithIdStr", $!{tbb.objectName}Query);
+		}else{
+			int count = (Integer) baseDAO.getSqlMapClientTemplate().queryForObject("$!{tbb.className}DAO.get$!{tbb.className}DOListCount",$!{tbb.objectName}Query);
+			$!{tbb.objectName}Query.setTotalItem(count);
+			return (List<$!{tbb.className}DO>)baseDAO.getSqlMapClientTemplate().queryForList("$!{tbb.className}DAO.get$!{tbb.className}DOListWithPage", $!{tbb.objectName}Query);
+		}
+#elseif($sysInit.dbType==2)		
+		int count = (Integer)baseDAO.getSqlMapClientTemplate().queryForObject("$!{tbb.className}DAO.get$!{tbb.className}DOListCount",$!{tbb.objectName}Query);
+		$!{tbb.objectName}Query.setTotalItem(count);
+		return (List<$!{tbb.className}DO>)baseDAO.getSqlMapClientTemplate().queryForList("$!{tbb.className}DAO.get$!{tbb.className}DOListWithPage", $!{tbb.objectName}Query);
+#end
+	}
+
+	public Long insert$!{tbb.className}DO($!{tbb.className}DO $!{tbb.objectName}DO){
+		$!{tbb.className}Validate.insert$!{tbb.className}DO($!{tbb.objectName}DO);
+		return (Long)baseDAO.getSqlMapClientTemplate().insert("$!{tbb.className}DAO.insert$!{tbb.className}DO", $!{tbb.objectName}DO);
+	}
+
+	public Integer update$!{tbb.className}DO($!{tbb.className}DO $!{tbb.objectName}DO){
+		$!{tbb.className}Validate.update$!{tbb.className}DO($!{tbb.objectName}DO);
+		return baseDAO.getSqlMapClientTemplate().update("$!{tbb.className}DAO.update$!{tbb.className}DO", $!{tbb.objectName}DO);
+	}
+
+	public Integer update$!{tbb.className}DOList($!{tbb.className}DO $!{tbb.objectName}DO){
+		$!{tbb.className}Validate.update$!{tbb.className}DOList($!{tbb.objectName}DO);
+		return baseDAO.getSqlMapClientTemplate().update("$!{tbb.className}DAO.update$!{tbb.className}DOList", $!{tbb.objectName}DO);
+	}
+	
+	public Integer delete$!{tbb.className}DO(Long id){
+		$!{tbb.className}Validate.delete$!{tbb.className}DO(id);
+		return baseDAO.getSqlMapClientTemplate().delete("$!{tbb.className}DAO.delete$!{tbb.className}DO", id);
+	}
+	
+	public Integer delete$!{tbb.className}DOList($!{tbb.className}Query $!{tbb.objectName}Query){
+		$!{tbb.className}Validate.delete$!{tbb.className}DOList($!{tbb.objectName}Query);
+		return baseDAO.getSqlMapClientTemplate().delete("$!{tbb.className}DAO.delete$!{tbb.className}DOList", $!{tbb.objectName}Query);
+	}
+
+}

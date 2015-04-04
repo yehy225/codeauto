@@ -1,0 +1,54 @@
+##BaseDAOTestCase代码生成模版
+##使用到的变量有：
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+##$!{gb.userName}机器登录用户名，如：yingyang
+##$!{gb.nowDate}当前日期，如：2011-10-14
+package $!{gb.packageName};
+
+import javax.annotation.Resource;
+
+import junit.framework.TestCase;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import $!{gb.packageName}.dao.ibatis.BaseDAO;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(
+		locations = { 
+		"classpath:dal/biz-dao.xml",
+		"classpath:dal/persistence/persistence.xml"
+		}
+)
+
+/**
+ * 测试类说明，测试本地DAO访问业务类
+ * @author $!{gb.userName}
+ * @since $!{gb.nowDate}
+ */
+public class BaseDAOTestCase extends TestCase {
+
+	protected Log logger = LogFactory.getLog(getClass());	
+	
+	@Resource
+	protected BaseDAO baseDAO;
+	
+	
+	@Before
+	public void setUp() {
+		
+	}
+
+	@Test
+	public final void testXX(){
+		Assert.assertTrue(true);
+	}
+
+}

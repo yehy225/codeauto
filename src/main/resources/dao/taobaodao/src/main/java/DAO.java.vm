@@ -1,0 +1,87 @@
+##DAO代码生成模版
+##使用到的变量有：
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+##$!{gb.userName}机器登录用户名，如：yingyang
+##$!{gb.nowDate}当前日期，如：2011-10-14
+##$!{tbb.className}类名，如：AgentAppForm
+##$!{tbb.objectName}对象名，如：agentAppForm
+##$!{tbb.tableComment}表注释，如：招商申请
+package $!{gb.packageName}.dao;
+
+import java.util.List;
+
+import com.taobao.common.dao.persistence.exception.DAOException;
+import $!{gb.packageName}.client.domain.${tbb.className}DO;
+import $!{gb.packageName}.client.query.${tbb.className}Query;
+
+/**
+ * ${tbb.tableComment}操作类
+ * @author $!{gb.userName}
+ * @since $!{gb.nowDate}
+ */
+public interface ${tbb.className}DAO {
+
+	/**
+	 * 获取${tbb.tableComment}记录
+	 * @param ${tbb.objectName}Query
+	 * @return 唯一记录
+	 * @throws DAOException
+	 */
+	${tbb.className}DO get${tbb.className}DO(${tbb.className}Query ${tbb.objectName}Query)throws DAOException;
+
+	/**
+	 * 获取${tbb.tableComment}记录列表
+	 * @param ${tbb.objectName}Query
+	 * @return 记录列表
+	 * @throws DAOException
+	 */
+	List<${tbb.className}DO> get${tbb.className}DOList(${tbb.className}Query ${tbb.objectName}Query)throws DAOException;
+
+	/**
+	 * 按分页获取${tbb.tableComment}记录列表
+	 * @param ${tbb.objectName}Query
+	 * @return 记录列表
+	 * @throws DAOException
+	 */
+	List<${tbb.className}DO> get${tbb.className}DOListWithPage(${tbb.className}Query ${tbb.objectName}Query)throws DAOException;
+
+	/**
+	 * 插入${tbb.tableComment}记录
+	 * @param ${tbb.objectName}DO
+	 * @return 插入成功的条数
+	 * @throws DAOException
+	 */
+	Long insert${tbb.className}DO(${tbb.className}DO ${tbb.objectName}DO)throws DAOException;
+	
+	/**
+	 * 按ID更新${tbb.tableComment}记录
+	 * @param ${tbb.objectName}DO
+	 * @return 成功更新的条数，正常为1
+	 * @throws DAOException
+	 */
+	Integer update${tbb.className}DO(${tbb.className}DO ${tbb.objectName}DO)throws DAOException;
+	
+	/**
+	 * 按idList批量更新${tbb.tableComment}记录
+	 * @param ${tbb.objectName}DO
+	 * @return 成功更新的条数
+	 * @throws DAOException
+	 */
+	Integer update${tbb.className}DOList(${tbb.className}DO ${tbb.objectName}DO)throws DAOException;
+
+	/**
+	 * 删除${tbb.tableComment}记录
+	 * @param id
+	 * @return 成功删除的条数
+	 * @throws DAOException
+	 */
+	Integer delete${tbb.className}DO(Long id) throws DAOException;
+
+	/**
+	 * 按条件批量删除${tbb.tableComment}记录
+	 * @param ${tbb.objectName}Query
+	 * @return 成功删除的条数
+	 * @throws DAOException
+	 */
+	Integer delete${tbb.className}DOList(${tbb.className}Query ${tbb.objectName}Query) throws DAOException;
+}

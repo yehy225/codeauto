@@ -1,0 +1,57 @@
+##表结构生成模版
+##使用到的变量有：
+##$!{tbb.tableName}表名，如：agent_app_form
+##$!{tbb.tableComment}表注释，如：招商申请
+##$!{tbb.colList}表字段列表
+##$!{tbb.indexList}表索引列表
+##$!{cb.colName}字段列名，如：full_name
+##$!{cb.colComment}字段注释，如：姓名全称
+##$!{cb.colType}字段列类型，如：VARCHAR
+##$!{cb.precision}字段列长度，如：20
+##$!{cb.scale}字段列小数位精度，如：3
+##$!{cb.nullable}是否可为空，如：true
+##$!{cb.defaultValue}缺省值，如：NULL
+##$!{cb.pK}是否主键，如：true
+##$!{cb.autoIncrement}是否自增字段，如：true
+##$!{ib.indexName}索引名称，如：IDX_TabelName_Name
+##$!{ib.indexColumns}索引字段，如：id,status
+##$!{ib.unique}索引是否唯一，如：true
+##$!{ib.primary}索引是否主键，如：true
+<?xml version="1.0" encoding="UTF-8" ?>
+<db>
+#if($sysInit.dbType==1)
+	<tables type="oracle">
+#foreach($tbb in $tbbList)
+		<table name="$!{tbb.tableName}" comment="$!{tbb.tableComment}">
+			<fields>
+#foreach($cb in $tbb.colList)
+				<field name="$!{cb.colName}" type="$!{cb.colType}" precision="$!{cb.precision}" scale="$!{cb.scale}" nullable="$!{cb.nullable}" defaultValue="$!{cb.defaultValue}" isPk="$!{cb.pK}" autoIncrement="$!{cb.autoIncrement}" comment="$!{cb.colComment}"/>
+#end
+			</fields>
+			<indexs>
+#foreach($ib in $tbb.indexList)
+				<index name="$!{ib.indexName}" isUnique="$!{ib.unique}" isPrimary="$!{ib.primary}" columns="$!{ib.indexColumns}"></index>
+#end
+			</indexs>
+		</table>
+#end
+	</tables>
+#elseif($sysInit.dbType==2)
+	<tables type="mysql">
+#foreach($tbb in $tbbList)
+		<table name="$!{tbb.tableName}" comment="$!{tbb.tableComment}">
+			<fields>
+#foreach($cb in $tbb.colList)
+				<field name="$!{cb.colName}" type="$!{cb.colType}" precision="$!{cb.precision}" scale="$!{cb.scale}" nullable="$!{cb.nullable}" defaultValue="$!{cb.defaultValue}" isPk="$!{cb.pK}" autoIncrement="$!{cb.autoIncrement}" comment="$!{cb.colComment}"/>
+#end
+			</fields>
+			<indexs>
+#foreach($ib in $tbb.indexList)
+				<index name="$!{ib.indexName}" isUnique="$!{ib.unique}" isPrimary="$!{ib.primary}" columns="$!{ib.indexColumns}"></index>
+#end
+			</indexs>
+		</table>
+#end
+	</tables>
+#end
+</db>

@@ -1,0 +1,19 @@
+##biz-dao.xml配置生成模版
+##使用到的变量有：
+##$!{tbb.className}类名，如：AgentAppForm
+##$!{tbb.objectName}对象名，如：agentAppForm
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+    "
+    default-autowire="byName">
+    <!-- ======================================================================== -->
+    <!--  DAO   -->
+    <!-- ======================================================================== -->
+#foreach($tbb in $tbbList)	
+    <bean id="$!{tbb.objectName}DAO" class="$!{gb.packageName}.dao.ibatis.impl.$!{tbb.className}DAOImpl" />
+#end
+</beans>

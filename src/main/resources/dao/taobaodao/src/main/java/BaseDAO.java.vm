@@ -1,0 +1,31 @@
+##BaseDAO代码生成模版
+##使用到的变量有：
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+##$!{gb.userName}机器登录用户名，如：yingyang
+##$!{gb.nowDate}当前日期，如：2011-10-14
+##$!{sysInit.dbName}数据库名，如：tripagent
+package $!{gb.packageName}.dao.ibatis;
+
+import com.taobao.common.dao.persistence.DBRoute;
+
+/**
+ * DAO基类
+ * @author $!{gb.userName}
+ * @since $!{gb.nowDate}
+ */
+public class BaseDAO {
+	
+	/** 当前连接的数据库 */
+	private DBRoute dbRoute;
+	
+	public DBRoute getDbRoute() {
+		if(dbRoute==null) dbRoute = new DBRoute("$!{sysInit.dbName}DB");
+		if("".equals(dbRoute.getXid())) dbRoute.setXid("$!{sysInit.dbName}DB");
+		return dbRoute;
+	}
+
+	public void setDbRoute(DBRoute dbRoute) {
+		this.dbRoute = dbRoute;
+	}
+
+}

@@ -1,0 +1,168 @@
+##DAO校验类代码生成模版,说明：
+##使用到的变量有：
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+##$!{gb.userName}机器登录用户名，如：yingyang
+##$!{gb.nowDate}当前日期，如：2011-10-14
+##$!{tbb.className}类名，如：AgentAppForm
+##$!{tbb.objectName}对象名，如：agentAppForm
+##$!{tbb.tableComment}表注释，如：招商申请
+##$!{tbb.colList}表字段列表
+##$!{cb.propertyName}字段属性名，如：fullName
+##$!{cb.methodName}字段方法名，如：FullName
+##$!{cb.propertyType}字段属性类型名，如：String
+##$!{cb.colComment}字段注释，如：姓名全称
+##$!{cb.colName}字段名称，如：full_name
+##$!{cb.precision}字段精度，如：4000=varchar(4000),20=bigint
+##$!{cb.nullable}字段是否不为空，如：not null
+package $!{gb.packageName}.dao.validate;
+
+import $!{gb.packageName}.dao.domain.$!{tbb.className}DO;
+import $!{gb.packageName}.dao.query.$!{tbb.className}Query;
+
+/**
+ * $!{tbb.tableComment}校验类
+ * 将在×ServiceClient、×ServiceImpl、×DAOImpl三层共同统一校验机制
+ * @author $!{gb.userName}
+ * @since $!{gb.nowDate}
+ */
+public class $!{tbb.className}Validate extends BaseValidate {
+	
+	//$!{tbb.className}字符字段长度值
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+	public final static int BYTELENGTH_OF_$stringUtil.toUpperCase($!{cb.colName}) = $!{cb.precision};
+#end
+#end
+	
+	/**
+	 * 单个查询条件验证ID不为空
+	 * @param $!{tbb.objectName}Query
+	 * @throws IllegalArgumentException
+	 */
+	public static void get$!{tbb.className}DO($!{tbb.className}Query $!{tbb.objectName}Query) throws IllegalArgumentException{
+		if($!{tbb.objectName}Query==null||$!{tbb.objectName}Query.get$!{tbb.pkcol.methodName}()==null || $!{tbb.objectName}Query.get$!{tbb.pkcol.methodName}()<=0){
+			throw new IllegalArgumentException("$!{tbb.objectName}Query Parameter is not correct,$!{tbb.objectName}Query:" + $!{tbb.objectName}Query);
+		}
+	}
+	
+	/**
+	 * 批量查询条件不校验
+	 * @param $!{tbb.objectName}Query
+	 * @throws IllegalArgumentException
+	 */
+	public static void get$!{tbb.className}DOList($!{tbb.className}Query $!{tbb.objectName}Query) throws IllegalArgumentException{
+
+	}
+	
+	/**
+	 * 批量翻页查询条件不校验
+	 * @param $!{tbb.objectName}Query
+	 * @throws IllegalArgumentException
+	 */
+	public static void get$!{tbb.className}DOListWithPage($!{tbb.className}Query $!{tbb.objectName}Query) throws IllegalArgumentException{
+
+	}
+	
+	/**
+	 * 新增记录对象校验不为空，长度校验
+	 * @param $!{tbb.objectName}DO
+	 * @throws IllegalArgumentException
+	 */
+	public static void insert$!{tbb.className}DO($!{tbb.className}DO $!{tbb.objectName}DO) throws IllegalArgumentException{
+		if (null == $!{tbb.objectName}DO) {
+			throw new IllegalArgumentException("$!{tbb.objectName}DO Parameter is null!");
+		}
+		if($!{tbb.objectName}DO.isValidate()) return;	//已经校验过了
+		//校验主体
+		StringBuffer sb = new StringBuffer();
+#foreach($cb in $tbb.colList)
+#if(!$!{cb.nullable}&&$!{cb.propertyName}!="id"&&$!{cb.propertyName}!="gmtModified"&&$!{cb.propertyName}!="gmtCreate")
+		sb = checkNotNull($!{tbb.objectName}DO.get$!{cb.methodName}(),sb,"$!{cb.propertyName}");
+#end
+#end
+		sb = validate$!{tbb.className}DOFieldLength($!{tbb.objectName}DO, sb);
+		//校验结尾
+		if(!"".equals(sb.toString())){
+			throw new IllegalArgumentException("insert$!{tbb.className}DO Parameter verify not correct,$!{tbb.objectName}DO:"+sb.toString());
+		}
+		$!{tbb.objectName}DO.setValidate(true);	//设置成校验过了。
+	}
+
+	/**
+	 * 新增和修改记录是需要验证对象长度
+	 * @param $!{tbb.objectName}DO
+	 * @param sb
+	 * @return
+	 */
+	private static StringBuffer validate$!{tbb.className}DOFieldLength($!{tbb.className}DO $!{tbb.objectName}DO,StringBuffer sb) {
+#foreach($cb in $tbb.colList)
+#if($!{cb.colSQLType}==12)
+		sb = checkLength($!{tbb.objectName}DO.get$!{cb.methodName}(),BYTELENGTH_OF_$stringUtil.toUpperCase($!{cb.colName}),sb,"$!{cb.propertyName}");
+#end
+#end
+		return sb;
+	}
+	
+	/**
+	 * 修改记录时验证ID不为空及字段长度
+	 * @param $!{tbb.objectName}DO
+	 * @throws IllegalArgumentException
+	 */
+	public static void update$!{tbb.className}DO($!{tbb.className}DO $!{tbb.objectName}DO) throws IllegalArgumentException{
+		if (null == $!{tbb.objectName}DO || $!{tbb.objectName}DO.get$!{tbb.pkcol.methodName}() == null||$!{tbb.objectName}DO.get$!{tbb.pkcol.methodName}()<1) {
+			throw new IllegalArgumentException("update$!{tbb.className}DO Parameter verify not correct,$!{tbb.objectName}DO:" + $!{tbb.objectName}DO);
+		}
+		if($!{tbb.objectName}DO.isValidate()) return;	//已经校验过了
+		//校验主体
+		StringBuffer sb = new StringBuffer();
+		sb = validate$!{tbb.className}DOFieldLength($!{tbb.objectName}DO, sb);
+		//校验结尾
+		if(!"".equals(sb.toString())){
+			throw new IllegalArgumentException("update$!{tbb.className}DO Parameter verify not correct,$!{tbb.objectName}DO:" + sb.toString());
+		}
+		$!{tbb.objectName}DO.setValidate(true);	//设置成校验过了。
+	}
+	
+	/**
+	 * 批量修改记录时验证IDList不为空及字段长度
+	 * @param $!{tbb.objectName}DO
+	 * @throws IllegalArgumentException
+	 */
+	public static void update$!{tbb.className}DOList($!{tbb.className}DO $!{tbb.objectName}DO) throws IllegalArgumentException{
+		if (null == $!{tbb.objectName}DO || $!{tbb.objectName}DO.getIdList() == null||$!{tbb.objectName}DO.getIdList().isEmpty()) {
+			throw new IllegalArgumentException("batch update$!{tbb.className}DO Parameter verify not correct,$!{tbb.objectName}DO:" + $!{tbb.objectName}DO);
+		}
+		if($!{tbb.objectName}DO.isValidate()) return;	//已经校验过了
+		//校验主体
+		StringBuffer sb = new StringBuffer();
+		sb = validate$!{tbb.className}DOFieldLength($!{tbb.objectName}DO, sb);
+		//校验结尾
+		if(!"".equals(sb.toString())){
+			throw new IllegalArgumentException("batch update$!{tbb.className}DOList Parameter verify not correct,$!{tbb.objectName}DO:" + sb.toString());
+		}
+		$!{tbb.objectName}DO.setValidate(true);	//设置成校验过了。
+	}
+	
+	/**
+	 * 单个删除记录时验证ID不为空
+	 * @param id
+	 * @throws IllegalArgumentException
+	 */
+	public static void delete$!{tbb.className}DO(Long id) throws IllegalArgumentException{
+		if (null == id || id < 1) {
+			throw new IllegalArgumentException("delete$!{tbb.className}DO Parameter verify not correct,id:" + id);
+		}
+	}
+	
+	/**
+	 * 批量删除记录时验证IDList不为空
+	 * @param $!{tbb.objectName}Query
+	 * @throws IllegalArgumentException
+	 */
+	public static void delete$!{tbb.className}DOList($!{tbb.className}Query $!{tbb.objectName}Query) throws IllegalArgumentException{
+		if (null == $!{tbb.objectName}Query || $!{tbb.objectName}Query.getIdList() == null||$!{tbb.objectName}Query.getIdList().isEmpty()) {
+			throw new IllegalArgumentException("delete$!{tbb.className}DO Parameter verify not correct,$!{tbb.objectName}Query:" + $!{tbb.objectName}Query);
+		}
+	}
+	
+}

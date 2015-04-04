@@ -1,0 +1,224 @@
+##DAO-sqlmap-mapping生成模版
+##使用到的变量有：
+##$!{tbb.className}类名，如：AgentAppForm
+##$!{tbb.objectName}对象名，如：agentAppForm
+##$!{tbb.tableName}表名，如：agent_app_form
+##$!{tbb.colList}表字段列表
+##$!{tbb.pkcol}表主键字段
+##$!{velocityCount}循环次数
+##$!{cb.propertyName}字段属性名，如：fullName
+##$!{cb.colName}字段列名，如：full_name
+##$!{cb.propertyType}字段属性类型名，如：String
+##$!{sysInit.dbType}数据库类型，1、Oracle；2、Mysql。
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap
+PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+"http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="${tbb.className}DAO">
+	<!-- Alias Map Defined -->
+	<typeAlias alias="${tbb.className}Query" type="$!{gb.packageName}.dao.query.${tbb.className}Query" />
+	<typeAlias alias="${tbb.className}DO" type="$!{gb.packageName}.dao.domain.${tbb.className}DO" />
+	<resultMap id="${tbb.objectName}DO" class="${tbb.className}DO">
+#foreach($cb in $tbb.colList)
+		<result property="$!cb.propertyName" column="$!cb.colName" />
+#end
+	</resultMap>
+		
+	<!-- Select SQL -->
+	<sql id="${tbb.objectName}DO.selector">
+		SELECT #foreach($cb in $tbb.colList)$!{cb.colName}#{if}($velocityCount != $tbb.colList.size()),#{end}#end
+		
+		FROM ${tbb.tableName}
+	</sql>
+	<sql id="${tbb.objectName}DOList.where">
+		<dynamic>
+#if($sysInit.dbType==2)
+			<isNotEmpty property="idList" prepend=" AND ">
+				${tbb.pkcol.colName} in
+				<iterate property="idList" conjunction="," open="(" close=")">
+					#idList[]#
+		        </iterate>
+			</isNotEmpty>
+#end
+#foreach($cb in $tbb.colList)
+#if($!{cb.colName}!=$!{tbb.pkcol.colName})
+#if($cb.propertyType=="String"||$cb.propertyType=="Long"||$cb.propertyType=="Integer")
+			<isNotNull property="$!cb.propertyName" prepend=" AND ">
+				$!{cb.colName}=#$!{cb.propertyName}#
+		  	</isNotNull>
+#end
+#end
+#end
+		</dynamic>
+	</sql>
+	<sql id="${tbb.objectName}DOList.order">
+		<dynamic>
+			ORDER BY 
+			<isNotEmpty property="orderFields">
+				<iterate property="orderFields" conjunction="," open="" close="">
+					#orderFields[].fieldName# #orderFields[].order#
+		        </iterate>
+			</isNotEmpty>
+			<isEmpty property="orderFields">
+				gmt_create DESC
+			</isEmpty>
+		</dynamic>
+	</sql>
+	<select id="${tbb.className}DAO.get${tbb.className}DO" parameterClass="${tbb.className}Query" resultMap="${tbb.objectName}DO">
+		<include refid="${tbb.objectName}DO.selector" />
+		WHERE ${tbb.pkcol.colName}=#${tbb.pkcol.propertyName}#
+	</select>
+#if($sysInit.dbType==1)
+	<select id="${tbb.className}DAO.get${tbb.className}DOListWithIdStr" parameterClass="${tbb.className}Query" resultMap="${tbb.objectName}DO">
+		SELECT /*+ ordered use_nl(t a) */ #foreach($cb in $tbb.colList)$!{cb.colName}#{if}($velocityCount != $tbb.colList.size()),#{end}#end
+		
+		FROM table(str2numlist(#idListStr#)) t,${tbb.tableName} a
+		WHERE t.column_value = a.id
+		<include refid="${tbb.objectName}DOList.where" />
+		ORDER BY gmt_create DESC
+	</select>
+#end
+	<select id="${tbb.className}DAO.get${tbb.className}DOList" parameterClass="${tbb.className}Query" resultMap="${tbb.objectName}DO">
+		<include refid="${tbb.objectName}DO.selector" />
+		WHERE 1=1
+		<include refid="${tbb.objectName}DOList.where" />
+		ORDER BY gmt_create DESC
+	</select>
+#if($sysInit.dbType==1)
+	<select id="${tbb.className}DAO.get${tbb.className}DOListWithPageWithIdStr" parameterClass="${tbb.className}Query" resultMap="${tbb.objectName}DO">
+		SELECT  /*+ ordered use_nl(x t) */ t.id,#foreach($cb in $tbb.colList)#{if}($!{cb.colName}!=$!{tbb.pkcol.colName})$!{cb.colName}#{if}($velocityCount != $tbb.colList.size()),#{end}#{end}#end
+        
+        FROM(SELECT b.id
+         	FROM(SELECT a.id, rownum rn
+                FROM(SELECT /*+ ordered use_nl(s e) */ id 
+                	FROM table(str2numlist(#idListStr#)) s,${tbb.tableName} e
+					WHERE s.column_value = id
+					<include refid="${tbb.objectName}DOList.where" />
+					<![CDATA[
+			  		ORDER BY gmt_modified DESC,id DESC) a
+                WHERE rownum <= #pageLastItem#) b
+         	WHERE b.rn >= #pageFirstItem#) x,${tbb.tableName} t 
+        WHERE x.id=t.id ORDER BY t.gmt_modified DESC,t.id DESC
+		]]>
+	</select>
+#end
+	<select id="${tbb.className}DAO.get${tbb.className}DOListWithPage" parameterClass="${tbb.className}Query" resultMap="${tbb.objectName}DO">
+#if($sysInit.dbType==1)
+	  	SELECT  /*+ ordered use_nl(x t) */ t.id,#foreach($cb in $tbb.colList)#{if}($!{cb.colName}!=$!{tbb.pkcol.colName})$!{cb.colName}#{if}($velocityCount != $tbb.colList.size()),#{end}#{end}#end
+		
+		FROM(SELECT b.id
+          	FROM(SELECT a.id, rownum rn
+            	FROM (select id 
+            		FROM ${tbb.tableName}
+        			WHERE 1=1
+					<include refid="${tbb.objectName}DOList.where" />
+					<![CDATA[
+		  			ORDER BY gmt_modified DESC,id DESC) a
+         		WHERE rownum <= #pageLastItem#) b
+      		WHERE b.rn >= #pageFirstItem#) x,${tbb.tableName} t 
+      	WHERE x.id=t.id ORDER BY t.gmt_modified DESC,t.id DESC
+		]]>
+#elseif($sysInit.dbType==2)
+		<include refid="${tbb.objectName}DO.selector" />
+		WHERE 1=1
+		<include refid="${tbb.objectName}DOList.where" />
+	  	ORDER BY gmt_modified DESC,${tbb.pkcol.colName} DESC
+	  	LIMIT #startRow#,#pageSize#
+#end
+	</select>
+#if($sysInit.dbType==1)
+	<select id="${tbb.className}DAO.get${tbb.className}DOListCountWithIdStr" parameterClass="${tbb.className}Query" resultClass="int">
+		SELECT /*+ ordered use_nl(t a) */ count(*) 
+		FROM table(str2numlist(#idListStr#)) t,${tbb.tableName} a
+		WHERE t.column_value = a.id
+		<include refid="${tbb.objectName}DOList.where" />
+	</select>
+#end
+	<select id="${tbb.className}DAO.get${tbb.className}DOListCount" parameterClass="${tbb.className}Query" resultClass="int">
+		SELECT count(*) FROM ${tbb.tableName}
+		WHERE 1=1
+		<include refid="${tbb.objectName}DOList.where" />
+	</select>
+
+	<!-- Insert SQL -->
+	<insert id="${tbb.className}DAO.insert${tbb.className}DO" parameterClass="${tbb.className}DO">
+#if($sysInit.dbType==1)
+		<selectKey keyProperty="id" resultClass="long">
+			SELECT seq_${tbb.tableName}_id.nextval AS id FROM dual
+    	</selectKey>
+		INSERT INTO ${tbb.tableName}(id,#{foreach}($cb in $tbb.colList)#{if}($!{cb.colName}!=$!{tbb.pkcol.colName}&&$!{cb.colName}!="gmt_create"&&$!{cb.colName}!="gmt_modified")$!{cb.colName},#{end}#{end}gmt_create,gmt_modified)
+		VALUES(#id#,#{foreach}($cb in $tbb.colList)#{if}($!{cb.colName}!=$!{tbb.pkcol.colName}&&$!{cb.colName}!="gmt_create"&&$!{cb.colName}!="gmt_modified")#$!{cb.propertyName}#,#{end}#{end}sysdate,sysdate)
+#elseif($sysInit.dbType==2)
+		INSERT INTO ${tbb.tableName}(#{foreach}($cb in $tbb.colList)#{if}($!{cb.colName}!=$!{tbb.pkcol.colName}&&$!{cb.colName}!="gmt_create"&&$!{cb.colName}!="gmt_modified")$!{cb.colName},#{end}#{end}gmt_create,gmt_modified)
+		VALUES(#{foreach}($cb in $tbb.colList)#{if}($!{cb.colName}!=$!{tbb.pkcol.colName}&&$!{cb.colName}!="gmt_create"&&$!{cb.colName}!="gmt_modified")#$!{cb.propertyName}#,#{end}#{end}now(),now())
+		<selectKey resultClass="long" type="post" keyProperty="$!{tbb.pkcol.colName}">
+           SELECT last_insert_id() AS $!{tbb.pkcol.propertyName}
+		</selectKey>
+#end
+	</insert>
+	
+	<!-- Update SQL -->
+	<update id="${tbb.className}DAO.update${tbb.className}DO" parameterClass="${tbb.className}DO">
+#if($sysInit.dbType==1)
+		UPDATE ${tbb.tableName} SET gmt_modified=sysdate
+#elseif($sysInit.dbType==2)
+		UPDATE ${tbb.tableName} SET gmt_modified=now()
+#end
+#foreach($cb in $tbb.colList)
+#if($!{cb.colName}!=$!{tbb.pkcol.colName}&&$!{cb.colName}!="gmt_create"&&$!{cb.colName}!="gmt_modified")
+		<isNotNull prepend="," property="$!{cb.propertyName}">
+			$!{cb.colName} = #$!{cb.propertyName}#
+      	</isNotNull>
+#end
+#end
+		WHERE $!{tbb.pkcol.colName} = #$!{tbb.pkcol.propertyName}#
+	</update>
+	<update id="${tbb.className}DAO.update${tbb.className}DOList" parameterClass="${tbb.className}DO">
+#if($sysInit.dbType==1)
+		UPDATE ${tbb.tableName} SET gmt_modified=sysdate
+#elseif($sysInit.dbType==2)
+		UPDATE ${tbb.tableName} SET gmt_modified=now()
+#end
+#foreach($cb in $tbb.colList)
+#if($!{cb.colName}!=$!{tbb.pkcol.colName}&&$!{cb.colName}!="gmt_create"&&$!{cb.colName}!="gmt_modified")
+		<isNotNull prepend="," property="$!{cb.propertyName}">
+			$!{cb.colName} = #$!{cb.propertyName}#
+      	</isNotNull>
+#end
+#end
+		<dynamic prepend=" WHERE ">
+			<isNotEmpty property="idList" prepend=" AND ">
+#if($sysInit.dbType==1)
+				$!{tbb.pkcol.colName} IN (select * from table(str2numlist(#idListStr#)))
+#elseif($sysInit.dbType==2)
+				$!{tbb.pkcol.colName} IN 
+				<iterate property="idList" conjunction="," open="(" close=")">
+					#idList[]#
+		        </iterate>
+#end
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<!-- Delete SQL -->
+	<delete id="${tbb.className}DAO.delete${tbb.className}DO" parameterClass="long">
+		DELETE FROM ${tbb.tableName}
+		WHERE $!{tbb.pkcol.colName} = #$!{tbb.pkcol.propertyName}#
+  	</delete>
+  	<delete id="${tbb.className}DAO.delete${tbb.className}DOList" parameterClass="${tbb.className}Query">
+		DELETE FROM ${tbb.tableName}
+		<dynamic prepend=" WHERE ">
+			<isNotEmpty property="idList" prepend=" AND ">
+#if($sysInit.dbType==1)
+				$!{tbb.pkcol.colName} IN (select * from table(str2numlist(#idListStr#)))
+#elseif($sysInit.dbType==2)
+				$!{tbb.pkcol.colName} IN 
+				<iterate property="idList" conjunction="," open="(" close=")">
+					#idList[]#
+		        </iterate>
+#end
+			</isNotEmpty>
+		</dynamic>
+  	</delete>
+</sqlMap>

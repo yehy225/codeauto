@@ -1,0 +1,46 @@
+##persistence-config生成模版
+##使用到的变量有：
+##$!{tbb.tableName}表名，如：agent_app_form
+##$!{sysInit.dbDriverClass}数据库驱动程序，如：oracle.jdbc.driver.OracleDriver
+##$!{sysInit.dbType}数据库类型，如：1、Oracle，2、Mysql。
+##$!{sysInit.dbServer}数据库服务器，如：10.232.38.32
+##$!{sysInit.dbName}数据库名，如：tripagent
+##$!{sysInit.dbUser}数据库登录名，如：tripagent
+##$!{sysInit.dbPwd}数据库登录密码，如：tripagent
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	<!-- DBDataSource -->
+	<bean id="$!{sysInit.dbName}DB" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+		<property name="driverClassName" value="$!{sysInit.dbDriverClass}"/>
+#if($sysInit.dbType==1)
+		<property name="url" value="jdbc:oracle:thin:@$!{sysInit.dbServer}:1521:$!{sysInit.dbName}"/>
+#elseif($sysInit.dbType==2) 
+		<property name="url" value="jdbc:mysql://$!{sysInit.dbServer}:3306/$!{sysInit.dbName}?autoReconnect=true&amp;characterEncoding=GBK&amp;zeroDateTimeBehavior=convertToNull&amp;transformedBitIsBoolean=true"/>
+#end
+		<property name="username" value="$!{sysInit.dbUser}"/>
+        <property name="password" value="$!{sysInit.dbPwd}"/>
+    </bean>
+	<!-- DBTransaction -->
+	<bean id="$!{sysInit.dbName}TransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="$!{sysInit.dbName}DB" />
+	</bean>
+	<bean id="$!{sysInit.dbName}TransactionTemplate" class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="$!{sysInit.dbName}TransactionManager" />
+	</bean>
+	<!-- DBSqlTemplate -->
+	<bean id="$!{sysInit.dbName}SqlMap" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation" value="classpath:dal/persistence/sqlmap-config.xml" />
+		<property name="dataSource" ref="$!{sysInit.dbName}DB" />
+	</bean>
+	<bean id="$!{sysInit.dbName}SqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+		<property name="sqlMapClient" ref="$!{sysInit.dbName}SqlMap" />
+	</bean>
+    <bean id="baseDAO" class="$!{gb.packageName}.dao.ibatis.BaseDAO">
+    	<property name="sqlMapClientTemplate" ref="$!{sysInit.dbName}SqlMapClientTemplate" />
+    </bean>
+
+	
+</beans>

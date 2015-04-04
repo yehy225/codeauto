@@ -1,0 +1,222 @@
+##DAO代码生成模版
+##使用到的变量有：
+##$!{gb.packageName}包名，如：com.taobao.trip.agent
+##$!{gb.userName}机器登录用户名，如：yingyang
+##$!{gb.nowDate}当前日期，如：2011-10-14
+##$!{tbb.className}类名，如：AgentAppForm
+##$!{tbb.objectName}对象名，如：agentAppForm
+##$!{tbb.tableComment}表注释，如：招商申请
+##$!{tbb.colList}表字段列表
+##$!{velocityCount}循环次数
+##$!{cb.propertyName}字段属性名，如：fullName
+##$!{cb.methodName}字段方法名，如：FullName
+##$!{cb.propertyType}字段属性类型名，如：String
+##$!{cb.colComment}字段注释，如：姓名全称
+package $!{gb.packageName}.dao;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+
+import $!{gb.packageName}.BaseDAOTestCase;
+import $!{gb.packageName}.dao.domain.$!{tbb.className}DO;
+import $!{gb.packageName}.dao.ibatis.$!{tbb.className}DAO;
+import $!{gb.packageName}.dao.query.$!{tbb.className}Query;
+
+/**
+ * $!{tbb.tableComment}测试类
+ * @author $!{gb.userName}
+ * @since $!{gb.nowDate}
+ */
+public class $!{tbb.className}DAOTest extends BaseDAOTestCase {
+	@Resource
+	private $!{tbb.className}DAO $!{tbb.objectName}DAO;
+
+	@Test
+	public final void testInsertUpdateQueryDelete$!{tbb.className}DO() {
+		//准备测试数据
+		$!{tbb.className}DO $!{tbb.objectName}DO = new $!{tbb.className}DO();
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+		$!{tbb.objectName}DO.set$!{cb.methodName}("s$!{velocityCount}");	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Integer")
+		$!{tbb.objectName}DO.set$!{cb.methodName}($!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Float")
+		$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount}f);	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Double")
+		$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Long"&&$!{cb.propertyName}!="id")
+		$!{tbb.objectName}DO.set$!{cb.methodName}($!{velocityCount}L);	/*$!{cb.colComment}*/
+#end
+#end
+		Long id = null;
+		try {
+			//插入数据
+			id = $!{tbb.objectName}DAO.insert$!{tbb.className}DO($!{tbb.objectName}DO);
+			if(id!=null){
+				//更新数据测试
+				$!{tbb.objectName}DO = new $!{tbb.className}DO();
+				$!{tbb.objectName}DO.setId(id);
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+				$!{tbb.objectName}DO.set$!{cb.methodName}("ms$!{velocityCount}");	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Integer")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(1$!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Float")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount}f);	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Double")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(1.$!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Long"&&$!{cb.propertyName}!="id")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(1$!{velocityCount}L);	/*$!{cb.colComment}*/
+#end
+#end
+				Integer rsUpdate = $!{tbb.objectName}DAO.update$!{tbb.className}DO($!{tbb.objectName}DO);
+				Assert.assertEquals(1, rsUpdate.intValue());
+				//查询测试
+				$!{tbb.className}Query $!{tbb.objectName}Query = new $!{tbb.className}Query();
+				$!{tbb.objectName}Query.setId(id);
+				$!{tbb.className}DO queryRs = $!{tbb.objectName}DAO.get$!{tbb.className}DO($!{tbb.objectName}Query);
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+				Assert.assertEquals("ms$!{velocityCount}", queryRs.get$!{cb.methodName}());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Integer")
+				Assert.assertEquals(1$!{velocityCount}, queryRs.get$!{cb.methodName}().intValue());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Float")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount}f);	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Double")
+				Assert.assertEquals(1.$!{velocityCount}, queryRs.get$!{cb.methodName}().doubleValue());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Long"&&$!{cb.propertyName}!="id")
+				Assert.assertEquals(1$!{velocityCount}L, queryRs.get$!{cb.methodName}().longValue());	/*$!{cb.colComment}*/
+#end
+#end
+				//删除数据测试
+				Integer rsDelete = $!{tbb.objectName}DAO.delete$!{tbb.className}DO(id);
+				Assert.assertEquals(1, rsDelete.intValue());
+			}else{
+				Assert.assertFalse("happen Exception,not insert demo data", true);
+			}
+		} catch (Exception e) {
+			logger.error("testInsertUpdateQueryDelete$!{tbb.className}DO() error", e);
+			Assert.assertFalse("happen Exception", true);
+		} finally {
+			if(id!=null){
+				try {
+					$!{tbb.objectName}DAO.delete$!{tbb.className}DO(id);
+				} catch (Exception e) {
+					logger.error("testInsertUpdateQueryDelete$!{tbb.className}DO() error at finally delete demo data", e);
+					Assert.assertFalse("happen Exception", true);
+				}
+			}
+		}
+	}
+
+	@Test
+	public final void testInsertUpdateQueryWithPageDelete$!{tbb.className}DOList() {
+		//准备测试数据
+		$!{tbb.className}DO $!{tbb.objectName}DO = new $!{tbb.className}DO();
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+		$!{tbb.objectName}DO.set$!{cb.methodName}("s$!{velocityCount}");	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Integer")
+		$!{tbb.objectName}DO.set$!{cb.methodName}($!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Float")
+		$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount}f);	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Double")
+		$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Long"&&$!{cb.propertyName}!="id")
+		$!{tbb.objectName}DO.set$!{cb.methodName}($!{velocityCount}L);	/*$!{cb.colComment}*/
+#end
+#end
+		Long id = null;
+		try {
+			//插入数据
+			id = $!{tbb.objectName}DAO.insert$!{tbb.className}DO($!{tbb.objectName}DO);
+			if(id!=null){
+				//批量更新数据测试
+				$!{tbb.objectName}DO = new $!{tbb.className}DO();
+				$!{tbb.objectName}DO.addIdList(id);
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+				$!{tbb.objectName}DO.set$!{cb.methodName}("ms$!{velocityCount}");	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Integer")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(1$!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Float")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount}f);	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Double")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(1.$!{velocityCount});	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Long"&&$!{cb.propertyName}!="id")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(1$!{velocityCount}L);	/*$!{cb.colComment}*/
+#end
+#end
+				Integer rs = $!{tbb.objectName}DAO.update$!{tbb.className}DOList($!{tbb.objectName}DO);
+				Assert.assertEquals(1, rs.intValue());
+				//批量查询测试
+				$!{tbb.className}Query $!{tbb.objectName}Query = new $!{tbb.className}Query();
+				$!{tbb.objectName}Query.addIdList(id);
+#foreach($cb in $tbb.colList)
+				$!{tbb.objectName}Query.orderby$!{cb.methodName}(false);
+#end
+				List<$!{tbb.className}DO> queryRs = $!{tbb.objectName}DAO.get$!{tbb.className}DOList($!{tbb.objectName}Query);
+				Assert.assertEquals(1,queryRs.size());
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+				Assert.assertEquals("ms$!{velocityCount}", queryRs.get(0).get$!{cb.methodName}());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Integer")
+				Assert.assertEquals(1$!{velocityCount}, queryRs.get(0).get$!{cb.methodName}().intValue());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Float")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount}f);	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Double")
+				Assert.assertEquals(1.$!{velocityCount}, queryRs.get(0).get$!{cb.methodName}().doubleValue());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Long"&&$!{cb.propertyName}!="id")
+				Assert.assertEquals(1$!{velocityCount}L, queryRs.get(0).get$!{cb.methodName}().longValue());	/*$!{cb.colComment}*/
+#end
+#end
+				//分页查询测试
+				$!{tbb.objectName}Query = new $!{tbb.className}Query();
+				$!{tbb.objectName}Query.addIdList(id);
+#foreach($cb in $tbb.colList)
+				$!{tbb.objectName}Query.orderby$!{cb.methodName}(true);
+#end
+				List<$!{tbb.className}DO> queryRsWithPage = $!{tbb.objectName}DAO.get$!{tbb.className}DOListWithPage($!{tbb.objectName}Query);
+				Assert.assertEquals(1,queryRsWithPage.size());
+#foreach($cb in $tbb.colList)
+#if($!{cb.propertyType}=="String")
+				Assert.assertEquals("ms$!{velocityCount}", queryRs.get(0).get$!{cb.methodName}());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Integer")
+				Assert.assertEquals(1$!{velocityCount}, queryRs.get(0).get$!{cb.methodName}().intValue());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Float")
+				$!{tbb.objectName}DO.set$!{cb.methodName}(0.$!{velocityCount}f);	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Double")
+				Assert.assertEquals(1.$!{velocityCount}, queryRs.get(0).get$!{cb.methodName}().doubleValue());	/*$!{cb.colComment}*/
+#elseif($!{cb.propertyType}=="Long"&&$!{cb.propertyName}!="id")
+				Assert.assertEquals(1$!{velocityCount}L, queryRs.get(0).get$!{cb.methodName}().longValue());	/*$!{cb.colComment}*/
+#end
+#end
+				//删除数据测试
+				$!{tbb.objectName}Query = new $!{tbb.className}Query();
+				$!{tbb.objectName}Query.addIdList(id);
+				Integer rsDelete = $!{tbb.objectName}DAO.delete$!{tbb.className}DOList($!{tbb.objectName}Query);
+				Assert.assertEquals(1, rsDelete.intValue());
+			}else{
+				Assert.assertFalse("happen Exception,not insert demo data", true);
+			}
+		} catch (Exception e) {
+			logger.error("testInsertUpdateQueryWithPageDelete$!{tbb.className}DOList() error", e);
+			Assert.assertFalse("happen Exception", true);
+		} finally{
+			if(id!=null){
+				try {
+					$!{tbb.objectName}DAO.delete$!{tbb.className}DO(id);
+				} catch (Exception e) {
+					logger.error("testInsertUpdateQueryWithPageDelete$!{tbb.className}DOList() error at finally delete demo data", e);
+					Assert.assertFalse("happen Exception", true);
+				}
+			}
+		}
+	}
+
+}
